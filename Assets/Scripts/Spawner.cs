@@ -25,7 +25,7 @@ public class Spawner : MonoBehaviour
 
         Vector3 positionObjectToSpawn = _cam.ScreenToWorldPoint(
                 new Vector3(Random.Range(0, Screen.width), Random.Range(0, Screen.height), randomDistance));
-        Instantiate(_prefabToSpawn, positionObjectToSpawn, Quaternion.identity);
+        Instantiate(_prefabToSpawn, positionObjectToSpawn, Quaternion.identity);     
     }
 
     void Update()
