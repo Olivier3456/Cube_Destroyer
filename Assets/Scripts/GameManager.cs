@@ -18,9 +18,9 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void OnePointMore()
+    public void ChangeScore(int pointsToAdd)
     {
-        _score++;
+        _score += pointsToAdd;
         _scoreText.text = _score.ToString();
     }
 

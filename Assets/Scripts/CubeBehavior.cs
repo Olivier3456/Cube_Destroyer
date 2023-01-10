@@ -4,26 +4,36 @@ using UnityEngine;
 
 public class CubeBehavior : MonoBehaviour
 {
-    
-    [SerializeField] private float _speed;
+    [SerializeField] private int _speed;
+    public int Speed { get; private set; }
+
     private static GameObject _cam;
+
+    [SerializeField] private int _scoreToAddWhenDestroyed;
+
+    private void Awake()
+    {
+        Speed = _speed;        
+    }
 
     void Start()
     {
-        if (!_cam)   _cam = GameObject.Find("Camera");
+        if (!_cam) _cam = GameObject.Find("Camera");
+    }
 
+    void Update()
+    {
+        transform.Translate(Vector3.back * Speed * Time.deltaTime);
+        transform.rotation = _cam.transform.rotation;
+
+
+        // On se place dans le référenciel de la caméra, et on désactive le cube si sa position Z dans ce référenciel est négative :
+        if (_cam.transform.InverseTransformPoint(transform.position).z < 0) gameObject.SetActive(false);
     }
 
     private void OnMouseDown()      // Pour désactiver l'objet si on clique dessus.
     {
         gameObject.SetActive(false);
-        GameManager.Instance.OnePointMore();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {        
-        transform.Translate(Vector3.back * _speed * Time.deltaTime);
-        transform.rotation = _cam.transform.rotation;
+        GameManager.Instance.ChangeScore(_scoreToAddWhenDestroyed);
     }
 }

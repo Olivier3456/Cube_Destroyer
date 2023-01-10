@@ -45,6 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToPool: {fileID: 3600678558971603210, guid: 81dfcc04e80916e44a51d4649cac3710, type: 3}
-  amountToPool: 5
+  amountToPool: 35
   _distanceMin: 50
   _distanceMax: 50
