@@ -4,11 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class UIManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _scoreText;
 
-    public static UIManager Instance;
+    public static GameManager Instance;
 
     private int _score = 0;
 
