@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Pooler : MonoBehaviour
 {
@@ -31,14 +32,16 @@ public class Pooler : MonoBehaviour
 
         for (int i = 0; i < _amountToPool - 1; i++)
         {
-            InstantiateGameObject();
+            InstantiateGameObject(false);
         }
     }
 
-    private GameObject InstantiateGameObject()
+    private GameObject InstantiateGameObject(bool activateObject)
     {
         GameObject objectToAdd = Instantiate(objectToPool);
-        objectToAdd.SetActive(false);
+
+        if (!activateObject) objectToAdd.SetActive(false);
+        
         objectToAdd.transform.parent = transform;
         pooledObjects.Add(objectToAdd);
         return objectToAdd;
@@ -75,9 +78,10 @@ public class Pooler : MonoBehaviour
             }
         }
 
-        if (_allObjectAlreadyActive)
+        if (_allObjectAlreadyActive)    // S'il n'y a plus de gameObjects inactifs dans la liste du pooler, il en instancie un en plus.
         {
-            InstantiateGameObject();
+            InstantiateGameObject(true);
+            pooledObjects[pooledObjects.Count - 1].SetActive(true);
             _allObjectAlreadyActive = false;
         }
     }
