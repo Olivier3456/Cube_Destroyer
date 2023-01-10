@@ -5,13 +5,29 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private Camera _cam;
-    [SerializeField] GameObject _prefabToSpawn;
+    [SerializeField] GameObject[] _poolers;
 
-    [SerializeField] private float _distanceMin;
-    [SerializeField] private float _distanceMax;
+    private GameObject[] _instantiatedPoolers;
+    private Pooler[] _instantiatedPoolersPoolerClass;
+         
     [SerializeField] private float _spawnInterval;
 
     private float _time;
+
+
+    private void Start()
+    {
+        _instantiatedPoolers = new GameObject[_poolers.Length];
+        _instantiatedPoolersPoolerClass = new Pooler[_poolers.Length];
+
+        for (int i = 0; i < _poolers.Length; i++)
+        {
+            _instantiatedPoolers[i] = Instantiate(_poolers[i], transform.position, Quaternion.identity);
+            _instantiatedPoolers[i].transform.parent = transform;
+
+            _instantiatedPoolersPoolerClass[i] = _instantiatedPoolers[i].GetComponent<Pooler>();
+        }
+    }
 
 
     void Update()
@@ -20,19 +36,9 @@ public class Spawner : MonoBehaviour
 
         if (_time >= _spawnInterval)
         {
-            SpawnNewObject();
+            int randomSpooler = Random.Range(0, _poolers.Length);
+            _instantiatedPoolersPoolerClass[randomSpooler].GetPooledObject();
             _time = 0;
         }
     }
-
-    private void SpawnNewObject()
-    {
-        float randomDistance = Random.Range(_distanceMin, _distanceMax);
-
-        Vector3 positionObjectToSpawn = _cam.ScreenToWorldPoint(
-                new Vector3(Random.Range(0, Screen.width), Random.Range(0, Screen.height), randomDistance));
-        Instantiate(_prefabToSpawn, positionObjectToSpawn, Quaternion.identity);     
-    }
-
-    
 }

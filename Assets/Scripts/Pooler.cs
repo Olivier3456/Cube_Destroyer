@@ -3,29 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pooler : MonoBehaviour
-{
-    public static Pooler PoolerInstance;
+{    
     private List<GameObject> pooledObjects;
 
     [SerializeField] private GameObject objectToPool;
 
     [SerializeField] private int amountToPool;
 
-    [SerializeField] private Camera _cam;
-    
     [SerializeField] private float _distanceMin;
     [SerializeField] private float _distanceMax;
-    [SerializeField] private float _spawnInterval;
 
-    private float _time;
-
-    private void Awake()
-    {
-        if (PoolerInstance == null) PoolerInstance = this;
-    }
+    private static Camera _camera;
 
     void Start()
     {
+        if (!_camera) _camera = GameObject.Find("Camera").GetComponent<Camera>();
+
         pooledObjects = new List<GameObject>();
 
         for (int i = 0; i < amountToPool; i++)
@@ -40,37 +33,23 @@ public class Pooler : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        _time += Time.deltaTime;
-
-        if (_time >= _spawnInterval)
-        {
-            GetPooledObject();
-            _time = 0;
-        }
-    }
-
-
     private Vector3 SetPosition()
     {
         float randomDistance = Random.Range(_distanceMin, _distanceMax);
 
-        Vector3 positionObjectToSpawn = _cam.ScreenToWorldPoint(
+        Vector3 positionObjectToSpawn = _camera.ScreenToWorldPoint(
                 new Vector3(Random.Range(0, Screen.width), Random.Range(0, Screen.height), randomDistance));
 
         return positionObjectToSpawn;
     }
 
 
-    public GameObject GetPooledObject()
+    public void GetPooledObject()
     {
         GameObject tempObject = pooledObjects[0];
         pooledObjects.RemoveAt(0);
         tempObject.transform.position = SetPosition();
         tempObject.SetActive(true);
         pooledObjects.Add(tempObject);
-
-        return tempObject;
     }
 }
