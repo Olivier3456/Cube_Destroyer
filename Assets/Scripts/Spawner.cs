@@ -14,9 +14,15 @@ public class Spawner : MonoBehaviour
     private float _time;
 
 
-    void Start()
+    void Update()
     {
+        _time += Time.deltaTime;
 
+        if (_time >= _spawnInterval)
+        {
+            SpawnNewObject();
+            _time = 0;
+        }
     }
 
     private void SpawnNewObject()
@@ -28,14 +34,5 @@ public class Spawner : MonoBehaviour
         Instantiate(_prefabToSpawn, positionObjectToSpawn, Quaternion.identity);     
     }
 
-    void Update()
-    {
-        _time += Time.deltaTime;
-
-        if (_time >= _spawnInterval)
-        {
-            SpawnNewObject();
-            _time = 0;
-        }
-    }
+    
 }

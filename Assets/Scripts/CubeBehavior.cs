@@ -12,10 +12,15 @@ public class CubeBehavior : MonoBehaviour
         if (!_cam)   _cam = GameObject.Find("Camera");
     }
 
+    private void OnMouseDown()      // Pour désactiver l'objet si on clique dessus.
+    {
+        gameObject.SetActive(false);
+    }
+
     // Update is called once per frame
     void Update()
-    {
-        transform.rotation = _cam.transform.rotation;
+    {        
         transform.Translate(Vector3.back * _speed * Time.deltaTime);
+        transform.rotation = _cam.transform.rotation;
     }
 }
