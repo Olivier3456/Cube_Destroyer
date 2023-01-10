@@ -17,6 +17,7 @@ public class CubeBehavior : MonoBehaviour
     private void OnMouseDown()      // Pour désactiver l'objet si on clique dessus.
     {
         gameObject.SetActive(false);
+        UIManager.Instance.OnePointMore();
     }
 
     // Update is called once per frame
