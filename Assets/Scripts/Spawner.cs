@@ -12,7 +12,7 @@ public class Spawner : MonoBehaviour
          
     [SerializeField] private float _spawnInterval;
 
-    private float _time;
+    private float _time = 0;
 
 
     private void Start()

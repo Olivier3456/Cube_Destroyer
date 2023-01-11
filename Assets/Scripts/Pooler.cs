@@ -5,32 +5,32 @@ using UnityEngine.Pool;
 
 public class Pooler : MonoBehaviour
 {
-    private List<GameObject> pooledObjects;
+    private List<GameObject> disabledObjects;
 
     [SerializeField] private GameObject objectToPool;
 
     private int _amountToPool = 5;
-    private bool _allObjectAlreadyActive;
 
     [SerializeField] private float _distanceMin;
     [SerializeField] private float _distanceMax;
 
-    private static Camera _camera;
+    private static Camera _camera;      // Static car tous nos poolers se partagent la même caméra.
+                                        // Seul le premier instancié aura besoin d'initialiser la variable _camera.
 
     void Start()
     {
-        pooledObjects = new List<GameObject>();
+        disabledObjects = new List<GameObject>();
 
         //pooledObjects.Add(InstantiateGameObject());   // Instancie un premier objet pour obtenir sa variable Speed.
 
         //amountToPool = (int)((1 / pooledObjects[0].GetComponent<CubeBehavior>().Speed) * 350); // Cette variable Speed nous sert à savoir combien
-        //                                                                    // d'objets de ce type on va faire spawner.
+        // d'objets de ce type on va faire spawner.
 
-        if (_amountToPool < 2) _amountToPool = 2;
+        if (_amountToPool < 1) _amountToPool = 1;
 
-        if (!_camera) _camera = GameObject.Find("Camera").GetComponent<Camera>();
+        if (!_camera) _camera = GameObject.Find("Camera").GetComponent<Camera>();       // Ne s'exécute qu'au premier pooler instancié.
 
-        for (int i = 0; i < _amountToPool - 1; i++)
+        for (int i = 1; i < _amountToPool; i++)
         {
             InstantiateGameObject(false);
         }
@@ -39,11 +39,19 @@ public class Pooler : MonoBehaviour
     private GameObject InstantiateGameObject(bool activateObject)
     {
         GameObject objectToAdd = Instantiate(objectToPool);
-
-        if (!activateObject) objectToAdd.SetActive(false);
-        
         objectToAdd.transform.parent = transform;
-        pooledObjects.Add(objectToAdd);
+        objectToAdd.GetComponent<CubeBehavior>()._pooler = this;
+
+        if (!activateObject)        // Si l'objet ne doit pas être activé, on le met dans notre liste d'objets disponibles :
+        {           
+            disabledObjects.Add(objectToAdd);
+        }
+        else
+        {
+            objectToAdd.transform.position = SetPosition();
+            objectToAdd.SetActive(true);
+        }
+
         return objectToAdd;
     }
 
@@ -55,34 +63,27 @@ public class Pooler : MonoBehaviour
                 new Vector3(Random.Range(0, Screen.width), Random.Range(0, Screen.height), randomDistance));
 
         // Autre façon de faire (Random.value choisit une valeur entre 0 et 1) :
-        Vector3 autrePosition = _camera.ViewportToWorldPoint(new Vector3(Random.value, Random.value, randomDistance));
+        // Vector3 autrePosition = _camera.ViewportToWorldPoint(new Vector3(Random.value, Random.value, randomDistance));
 
         return positionObjectToSpawn;
     }
 
 
+    public void AddObjectToDisabledList(GameObject objectToAdd)
+    {
+        disabledObjects.Add(objectToAdd);
+    }
+
+
     public void GetPooledObject()
     {
-        for (int i = 0; i < pooledObjects.Count; i++)
-        {
-            if (!pooledObjects[i].activeInHierarchy)
-            {
-                pooledObjects[i].transform.position = SetPosition();
-                pooledObjects[i].SetActive(true);
-                break;
-            }
+        if (disabledObjects.Count == 0) InstantiateGameObject(true);      // S'il n'y a plus d'objets disponibles, on en instancie un.
 
-            if (i == pooledObjects.Count - 1)
-            {
-                _allObjectAlreadyActive = true;
-            }
-        }
-
-        if (_allObjectAlreadyActive)    // S'il n'y a plus de gameObjects inactifs dans la liste du pooler, il en instancie un en plus.
+        else
         {
-            InstantiateGameObject(true);
-            pooledObjects[pooledObjects.Count - 1].SetActive(true);
-            _allObjectAlreadyActive = false;
+            disabledObjects[0].transform.position = SetPosition();
+            disabledObjects[0].SetActive(true);
+            disabledObjects.RemoveAt(0);
         }
     }
 }

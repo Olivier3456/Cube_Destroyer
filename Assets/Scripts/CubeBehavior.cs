@@ -7,18 +7,21 @@ public class CubeBehavior : MonoBehaviour
     [SerializeField] private int _speed;
     public int Speed { get; private set; }
 
-    private static GameObject _cam;
+    public Pooler _pooler;
+
+    private static GameObject _cam;     // Idem que pour les poolers, tous les objets ont la même caméra.
 
     [SerializeField] private int _scoreToAddWhenDestroyed;
 
     private void Awake()
     {
-        Speed = _speed;        
+        Speed = _speed;
     }
 
     void Start()
     {
-        if (!_cam) _cam = GameObject.Find("Camera");
+        gameObject.SetActive(false);
+        if (!_cam) _cam = GameObject.Find("Camera");     // Seul le premier objet instancié a besoin d'initialiser la variable _cam static.
     }
 
     void Update()
@@ -35,5 +38,10 @@ public class CubeBehavior : MonoBehaviour
     {
         gameObject.SetActive(false);
         GameManager.Instance.ChangeScore(_scoreToAddWhenDestroyed);
+    }
+
+    private void OnDisable()
+    {
+        _pooler.AddObjectToDisabledList(gameObject);
     }
 }
