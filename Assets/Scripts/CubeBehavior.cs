@@ -19,9 +19,9 @@ public class CubeBehavior : MonoBehaviour
     }
 
     void Start()
-    {
-        gameObject.SetActive(false);
+    {       
         if (!_cam) _cam = GameObject.Find("Camera");     // Seul le premier objet instancié a besoin d'initialiser la variable _cam static.
+        gameObject.SetActive(false);
     }
 
     void Update()

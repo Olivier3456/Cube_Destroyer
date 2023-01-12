@@ -32,27 +32,17 @@ public class Pooler : MonoBehaviour
 
         for (int i = 1; i < _amountToPool; i++)
         {
-            InstantiateGameObject(false);
+            InstantiateGameObject();
         }
     }
 
-    private GameObject InstantiateGameObject(bool activateObject)
+    private void InstantiateGameObject()
     {
         GameObject objectToAdd = Instantiate(objectToPool);
         objectToAdd.transform.parent = transform;
         objectToAdd.GetComponent<CubeBehavior>()._pooler = this;
 
-        if (!activateObject)        // Si l'objet ne doit pas être activé, on le met dans notre liste d'objets disponibles :
-        {           
-            disabledObjects.Add(objectToAdd);
-        }
-        else
-        {
-            objectToAdd.transform.position = SetPosition();
-            objectToAdd.SetActive(true);
-        }
-
-        return objectToAdd;
+        objectToAdd.transform.position = SetPosition();  
     }
 
     private Vector3 SetPosition()
@@ -77,7 +67,7 @@ public class Pooler : MonoBehaviour
 
     public void GetPooledObject()
     {
-        if (disabledObjects.Count == 0) InstantiateGameObject(true);      // S'il n'y a plus d'objets disponibles, on en instancie un.
+        if (disabledObjects.Count == 0) InstantiateGameObject();      // S'il n'y a plus d'objets disponibles, on en instancie un.
 
         else
         {
