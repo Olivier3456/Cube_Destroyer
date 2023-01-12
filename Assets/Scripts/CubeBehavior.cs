@@ -20,15 +20,13 @@ public class CubeBehavior : MonoBehaviour
 
     void Start()
     {       
-        if (!_cam) _cam = GameObject.Find("Camera");     // Seul le premier objet instancié a besoin d'initialiser la variable _cam static.
-        gameObject.SetActive(false);
+        if (!_cam) _cam = GameObject.Find("Camera");     // Seul le premier objet instancié a besoin d'initialiser la variable _cam static.       
     }
 
     void Update()
     {
         transform.Translate(Vector3.back * Speed * Time.deltaTime);
         transform.rotation = _cam.transform.rotation;
-
 
         // On se place dans le référenciel de la caméra, et on désactive le cube si sa position Z dans ce référenciel est négative :
         if (_cam.transform.InverseTransformPoint(transform.position).z < 0) gameObject.SetActive(false);
